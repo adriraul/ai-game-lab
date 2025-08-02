@@ -332,10 +332,51 @@ class CrashGame {
             this.balanceEl.classList.remove('balance-update');
         }, 1000);
 
-        this.endGame(
+        // Marcar como plantado pero continuar la animación
+        this.gameActive = false;
+        this.cashoutBtn.disabled = true;
+        this.startBtn.disabled = true;
+
+        // Mostrar mensaje de plantado
+        this.showMessage(
             `¡Plantado en ${this.cashoutMultiplier.toFixed(2)}x! Ganaste $${profit.toFixed(2)}`,
             'success'
         );
+
+        // Continuar animación hasta el crash point
+        this.continueAnimationUntilCrash();
+    }
+
+    continueAnimationUntilCrash() {
+        // Continuar la animación hasta que llegue al crash point
+        const animate = () => {
+            const currentTime = Date.now();
+            const elapsed = (currentTime - this.gameStartTime) / 1000;
+
+            // Calcular multiplicador actual
+            this.currentMultiplier = Math.pow(Math.E, elapsed * 0.08);
+
+            // Agregar punto a la gráfica
+            this.chartData.push({
+                time: elapsed,
+                multiplier: this.currentMultiplier,
+            });
+
+            // Actualizar UI
+            this.updateMultiplier();
+            this.drawChart();
+
+            // Verificar si se estrelló
+            if (this.currentMultiplier >= this.crashPoint) {
+                this.crash();
+                return;
+            }
+
+            // Continuar animación
+            requestAnimationFrame(animate);
+        };
+
+        animate();
     }
 
     crash() {
@@ -347,17 +388,27 @@ class CrashGame {
         this.crashStatusEl.textContent = '💥 ¡CRASH!';
         this.crashStatusEl.style.color = '#ef4444';
 
-        // Agregar al historial
-        this.addToHistory(false, this.crashPoint, 0);
+        // Agregar al historial solo si no se había plantado
+        if (this.cashoutMultiplier === 0) {
+            this.addToHistory(false, this.crashPoint, 0);
+        }
 
         // Continuar animación del crash
         this.animateCrash();
 
         setTimeout(() => {
-            this.endGame(
-                `¡Se estrelló en ${this.crashPoint.toFixed(2)}x! Perdiste $${this.currentBet.toFixed(2)}`,
-                'error'
-            );
+            // Mostrar mensaje diferente según si se plantó o no
+            if (this.cashoutMultiplier > 0) {
+                this.endGame(
+                    `¡Se estrelló en ${this.crashPoint.toFixed(2)}x! Te plantaste a tiempo en ${this.cashoutMultiplier.toFixed(2)}x`,
+                    'info'
+                );
+            } else {
+                this.endGame(
+                    `¡Se estrelló en ${this.crashPoint.toFixed(2)}x! Perdiste $${this.currentBet.toFixed(2)}`,
+                    'error'
+                );
+            }
         }, 2000);
     }
 
@@ -394,7 +445,6 @@ class CrashGame {
 
         this.updateUI();
         this.saveStats();
-        this.showMessage(message, type);
 
         // Limpiar animación
         if (this.animationId) {
