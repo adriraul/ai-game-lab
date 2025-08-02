@@ -29,6 +29,24 @@ Un juego de estrategia donde debes hacer clic en bloques para ganar puntos, pero
 4. Decide si continuar o plantarte
 5. Los bloques más altos tienen más riesgo
 
+### 📈 Crash
+Un juego de gambling donde el multiplicador sube exponencialmente. ¡Plántate antes de que se estrelle!
+
+**Características:**
+- Multiplicador exponencial en tiempo real
+- Gráfica animada del crecimiento
+- Sistema de apuestas con dinero virtual
+- Historial de partidas
+- Efectos visuales impactantes
+
+**Cómo jugar:**
+1. Ingresa la cantidad que quieres apostar
+2. Haz clic en "Iniciar Apuesta"
+3. El multiplicador comenzará a subir exponencialmente
+4. ¡Plántate antes de que se estrelle!
+5. Si te plantas a tiempo, ganas tu apuesta × multiplicador
+6. Si se estrelle, pierdes todo lo apostado
+
 ## 🛠️ Tecnologías
 
 - **HTML5** - Estructura semántica
@@ -69,7 +87,11 @@ ai-game-lab/
 ├── package.json            # Dependencias y scripts
 ├── README.md              # Documentación
 └── games/                 # Carpeta de juegos
-    └── block-bomb/        # Juego de Bloques y Bombas
+    ├── block-bomb/        # Juego de Bloques y Bombas
+    │   ├── index.html     # Página del juego
+    │   ├── main.js        # Lógica del juego
+    │   └── style.css      # Estilos específicos
+    └── crash/             # Juego Crash
         ├── index.html     # Página del juego
         ├── main.js        # Lógica del juego
         └── style.css      # Estilos específicos

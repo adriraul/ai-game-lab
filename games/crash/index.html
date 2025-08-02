@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Crash - AI Game Lab</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body
+        class="bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900 min-h-screen"
+    >
+        <!-- Header con navegación -->
+        <header class="bg-white/10 backdrop-blur-sm border-b border-white/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center">
+                        <a
+                            href="../../index.html"
+                            class="text-white hover:text-green-300 transition-colors mr-4"
+                        >
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <i
+                            class="fas fa-chart-line text-2xl text-green-400 mr-3"
+                        ></i>
+                        <h1 class="text-2xl font-bold text-white">Crash</h1>
+                    </div>
+                    <div class="text-gray-300">
+                        <a
+                            href="../../index.html"
+                            class="hover:text-white transition-colors"
+                        >
+                            <i class="fas fa-home mr-1"></i>
+                            Volver al Catálogo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido del juego -->
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <!-- Header del juego -->
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-white mb-2">📈 Crash</h2>
+                <p class="text-gray-300 text-lg">
+                    ¡Plántate antes de que se estrelle!
+                </p>
+            </div>
+
+            <!-- Panel de estadísticas -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                    <div class="bg-green-500/20 rounded-lg p-4">
+                        <h3 class="text-green-200 font-semibold">Balance</h3>
+                        <p class="text-2xl font-bold text-white" id="balance">
+                            $1000.00
+                        </p>
+                    </div>
+                    <div class="bg-blue-500/20 rounded-lg p-4">
+                        <h3 class="text-blue-200 font-semibold">Apuesta</h3>
+                        <p class="text-2xl font-bold text-white" id="betAmount">
+                            $0.00
+                        </p>
+                    </div>
+                    <div class="bg-purple-500/20 rounded-lg p-4">
+                        <h3 class="text-purple-200 font-semibold">
+                            Multiplicador
+                        </h3>
+                        <p
+                            class="text-2xl font-bold text-white"
+                            id="multiplier"
+                        >
+                            1.00x
+                        </p>
+                    </div>
+                    <div class="bg-yellow-500/20 rounded-lg p-4">
+                        <h3 class="text-yellow-200 font-semibold">Ganancia</h3>
+                        <p class="text-2xl font-bold text-white" id="profit">
+                            $0.00
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Área de juego principal -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Gráfica del multiplicador -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                        <div class="text-center mb-4">
+                            <h3 class="text-xl font-semibold text-white mb-2">
+                                Multiplicador en Tiempo Real
+                            </h3>
+                            <p class="text-gray-300">
+                                ¡Plántate antes de que se estrelle!
+                            </p>
+                        </div>
+
+                        <!-- Canvas para la gráfica -->
+                        <div class="relative bg-black/20 rounded-lg p-4 mb-4">
+                            <canvas
+                                id="crashChart"
+                                width="800"
+                                height="400"
+                                class="w-full h-64 bg-gradient-to-br from-green-900/20 to-blue-900/20 rounded"
+                            ></canvas>
+
+                            <!-- Overlay para el multiplicador actual -->
+                            <div
+                                id="multiplierOverlay"
+                                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center hidden"
+                            >
+                                <div
+                                    class="text-6xl font-bold text-white mb-2"
+                                    id="currentMultiplier"
+                                >
+                                    1.00x
+                                </div>
+                                <div
+                                    class="text-xl text-gray-300"
+                                    id="crashStatus"
+                                >
+                                    ¡Plántate ahora!
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Controles del juego -->
+                        <div
+                            class="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                        >
+                            <button
+                                id="startBtn"
+                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
+                            >
+                                🚀 Iniciar Apuesta
+                            </button>
+                            <button
+                                id="cashoutBtn"
+                                class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
+                                disabled
+                            >
+                                💰 Plantarse
+                            </button>
+                            <button
+                                id="resetBtn"
+                                class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
+                            >
+                                🔄 Reiniciar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de apuestas -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                        <h3
+                            class="text-xl font-semibold text-white mb-4 text-center"
+                        >
+                            💰 Hacer Apuesta
+                        </h3>
+
+                        <!-- Input de apuesta -->
+                        <div class="mb-6">
+                            <label
+                                for="betInput"
+                                class="block text-gray-300 mb-2"
+                                >Cantidad a apostar:</label
+                            >
+                            <div class="relative">
+                                <span
+                                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                                    >$</span
+                                >
+                                <input
+                                    type="number"
+                                    id="betInput"
+                                    placeholder="0.00"
+                                    min="0.01"
+                                    step="0.01"
+                                    class="w-full pl-8 pr-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Botones de apuesta rápida -->
+                        <div class="grid grid-cols-2 gap-2 mb-6">
+                            <button
+                                class="quick-bet bg-blue-500/20 hover:bg-blue-500/30 text-white py-2 px-4 rounded transition-colors"
+                                data-amount="10"
+                            >
+                                $10
+                            </button>
+                            <button
+                                class="quick-bet bg-blue-500/20 hover:bg-blue-500/30 text-white py-2 px-4 rounded transition-colors"
+                                data-amount="25"
+                            >
+                                $25
+                            </button>
+                            <button
+                                class="quick-bet bg-blue-500/20 hover:bg-blue-500/30 text-white py-2 px-4 rounded transition-colors"
+                                data-amount="50"
+                            >
+                                $50
+                            </button>
+                            <button
+                                class="quick-bet bg-blue-500/20 hover:bg-blue-500/30 text-white py-2 px-4 rounded transition-colors"
+                                data-amount="100"
+                            >
+                                $100
+                            </button>
+                        </div>
+
+                        <!-- Historial de partidas -->
+                        <div class="mt-6">
+                            <h4 class="text-lg font-semibold text-white mb-3">
+                                📊 Historial
+                            </h4>
+                            <div
+                                id="historyContainer"
+                                class="space-y-2 max-h-48 overflow-y-auto"
+                            >
+                                <!-- El historial se generará dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instrucciones del juego -->
+            <div class="mt-8 bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 text-center">
+                    📖 Cómo Jugar
+                </h3>
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300"
+                >
+                    <div>
+                        <h4 class="font-semibold text-white mb-2">
+                            🎯 Objetivo
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li>• Haz una apuesta con tu dinero disponible</li>
+                            <li>• El multiplicador sube exponencialmente</li>
+                            <li>• Plántate antes de que se estrelle</li>
+                            <li>
+                                • Si te plantas a tiempo, ganas tu apuesta ×
+                                multiplicador
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-2">
+                            🎮 Controles
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li>
+                                • <strong>Iniciar Apuesta:</strong> Comienza una
+                                nueva ronda
+                            </li>
+                            <li>
+                                • <strong>Plantarse:</strong> Cobra tus
+                                ganancias
+                            </li>
+                            <li>
+                                • <strong>Reiniciar:</strong> Vuelve a $1000 de
+                                balance
+                            </li>
+                            <li>
+                                • <strong>Botones rápidos:</strong> Apuesta
+                                cantidades predefinidas
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="main.js"></script>
+    </body>
+</html>

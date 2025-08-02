@@ -1,0 +1,344 @@
+/* Estilos específicos para el juego Crash */
+
+/* Animaciones para botones */
+button:not(:disabled) {
+    transition: all 0.3s ease;
+}
+
+button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+button:not(:disabled):active {
+    transform: translateY(0);
+}
+
+/* Estilos para botones deshabilitados */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Efectos para el canvas */
+#crashChart {
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+}
+
+/* Animación para el multiplicador */
+.multiplier-animation {
+    animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Efectos para el overlay del multiplicador */
+#multiplierOverlay {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Animación de crash */
+.crash-animation {
+    animation: crashShake 0.5s ease-in-out;
+}
+
+@keyframes crashShake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Efectos para botones de apuesta rápida */
+.quick-bet {
+    transition: all 0.2s ease;
+}
+
+.quick-bet:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.quick-bet:active {
+    transform: scale(0.95);
+}
+
+/* Estilos para el input de apuesta */
+#betInput {
+    transition: all 0.3s ease;
+}
+
+#betInput:focus {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+}
+
+/* Animación para ganancias */
+.profit-animation {
+    animation: profitGlow 1s ease-in-out;
+}
+
+@keyframes profitGlow {
+    0% {
+        color: #fbbf24;
+        text-shadow: 0 0 5px #fbbf24;
+    }
+    50% {
+        color: #fde047;
+        text-shadow: 0 0 20px #fde047;
+    }
+    100% {
+        color: #fbbf24;
+        text-shadow: 0 0 5px #fbbf24;
+    }
+}
+
+/* Animación para pérdidas */
+.loss-animation {
+    animation: lossShake 0.5s ease-in-out;
+}
+
+@keyframes lossShake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-10px);
+    }
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+/* Estilos para el historial */
+.history-item {
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.history-item:hover {
+    transform: translateX(5px);
+}
+
+.history-win {
+    background: rgba(34, 197, 94, 0.2);
+    border-left: 4px solid #22c55e;
+}
+
+.history-loss {
+    background: rgba(239, 68, 68, 0.2);
+    border-left: 4px solid #ef4444;
+}
+
+/* Efectos de partículas para victoria */
+.victory-particles {
+    position: relative;
+    overflow: hidden;
+}
+
+.victory-particles::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(34, 197, 94, 0.3) 50%,
+        transparent 70%
+    );
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #crashChart {
+        height: 200px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flex {
+        flex-direction: column;
+    }
+}
+
+/* Efectos de hover para el header */
+.nav-link {
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    transform: translateX(-3px);
+}
+
+/* Animación para el balance */
+.balance-update {
+    animation: balanceUpdate 0.5s ease-in-out;
+}
+
+@keyframes balanceUpdate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Efectos para el estado del juego */
+.game-active {
+    background: linear-gradient(
+        135deg,
+        rgba(34, 197, 94, 0.1),
+        rgba(59, 130, 246, 0.1)
+    );
+    border: 2px solid rgba(34, 197, 94, 0.3);
+}
+
+.game-crashed {
+    background: linear-gradient(
+        135deg,
+        rgba(239, 68, 68, 0.1),
+        rgba(220, 38, 38, 0.1)
+    );
+    border: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Estilos para el contador de tiempo */
+.time-counter {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #fbbf24;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+/* Efectos para el multiplicador crítico */
+.critical-multiplier {
+    animation: criticalPulse 0.3s ease-in-out infinite;
+}
+
+@keyframes criticalPulse {
+    0%,
+    100% {
+        color: #fbbf24;
+        text-shadow: 0 0 10px #fbbf24;
+    }
+    50% {
+        color: #fde047;
+        text-shadow: 0 0 20px #fde047;
+    }
+}
+
+/* Estilos para el overlay de game over */
+.game-over-overlay {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(239, 68, 68, 0.5);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Animación de entrada para elementos */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efectos para el gráfico en tiempo real */
+.chart-line {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.5));
+}
+
+.chart-line-crashed {
+    stroke: #ef4444;
+    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.5));
+}
+
+/* Estilos para el área de apuestas */
+.bet-area {
+    background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.1),
+        rgba(147, 51, 234, 0.1)
+    );
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* Efectos de hover para el historial */
+.history-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.history-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.history-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.history-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
