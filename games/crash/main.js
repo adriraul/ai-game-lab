@@ -149,21 +149,21 @@ class CrashGame {
         const random = Math.random();
         const houseEdge = 0.1; // 10% edge de la casa (más difícil)
 
-        // Parámetros para distribución exponencial muy desafiante
+        // Parámetros para distribución exponencial extremadamente desafiante
         const minCrash = 1.0; // Mínimo crash point
-        const maxCrash = 50.0; // Máximo crash point (muy raro)
-        const lambda = 0.25; // Parámetro muy agresivo para distribución exponencial
+        const maxCrash = 20.0; // Máximo crash point (extremadamente raro)
+        const lambda = 0.5; // Parámetro extremadamente agresivo para distribución exponencial
 
         // Distribución exponencial verdadera
-        // Esto hace que sea mucho más probable crashear en valores bajos
+        // Esto hace que sea extremadamente probable crashear en valores bajos
         // y exponencialmente más difícil en valores altos
         const exponentialValue = -Math.log(1 - random) / lambda;
 
-        // Mapear el valor exponencial al rango de crash points (muy desafiante)
-        // Ajustado para que sea más difícil ganar
+        // Mapear el valor exponencial al rango de crash points (extremadamente desafiante)
+        // Ajustado para que sea extremadamente difícil ganar
         const crashPoint =
             minCrash +
-            (maxCrash - minCrash) * (1 - Math.exp(-exponentialValue / 20));
+            (maxCrash - minCrash) * (1 - Math.exp(-exponentialValue / 50));
 
         // Aplicar house edge para hacer el juego desafiante
         const finalCrashPoint = crashPoint * (1 - houseEdge);
@@ -184,10 +184,10 @@ class CrashGame {
         if (!this.crashStats) {
             this.crashStats = {
                 total: 0,
-                low: 0, // 1.0 - 1.3x
-                medium: 0, // 1.3 - 2.0x
-                high: 0, // 2.0 - 5.0x
-                veryHigh: 0, // 5.0x+
+                low: 0, // 1.0 - 1.2x
+                medium: 0, // 1.2 - 1.5x
+                high: 0, // 1.5 - 3.0x
+                veryHigh: 0, // 3.0x+
                 maxCrash: 0,
             };
         }
@@ -198,9 +198,9 @@ class CrashGame {
             crashPoint
         );
 
-        if (crashPoint < 1.3) this.crashStats.low++;
-        else if (crashPoint < 2.0) this.crashStats.medium++;
-        else if (crashPoint < 5.0) this.crashStats.high++;
+        if (crashPoint < 1.2) this.crashStats.low++;
+        else if (crashPoint < 1.5) this.crashStats.medium++;
+        else if (crashPoint < 3.0) this.crashStats.high++;
         else this.crashStats.veryHigh++;
 
         // Mostrar estadísticas cada 10 partidas
@@ -208,16 +208,16 @@ class CrashGame {
             console.log('📊 Estadísticas de Crash Points:');
             console.log(`Total partidas: ${this.crashStats.total}`);
             console.log(
-                `1.0-1.3x: ${this.crashStats.low} (${((this.crashStats.low / this.crashStats.total) * 100).toFixed(1)}%)`
+                `1.0-1.2x: ${this.crashStats.low} (${((this.crashStats.low / this.crashStats.total) * 100).toFixed(1)}%)`
             );
             console.log(
-                `1.3-2.0x: ${this.crashStats.medium} (${((this.crashStats.medium / this.crashStats.total) * 100).toFixed(1)}%)`
+                `1.2-1.5x: ${this.crashStats.medium} (${((this.crashStats.medium / this.crashStats.total) * 100).toFixed(1)}%)`
             );
             console.log(
-                `2.0-5.0x: ${this.crashStats.high} (${((this.crashStats.high / this.crashStats.total) * 100).toFixed(1)}%)`
+                `1.5-3.0x: ${this.crashStats.high} (${((this.crashStats.high / this.crashStats.total) * 100).toFixed(1)}%)`
             );
             console.log(
-                `5.0x+: ${this.crashStats.veryHigh} (${((this.crashStats.veryHigh / this.crashStats.total) * 100).toFixed(1)}%)`
+                `3.0x+: ${this.crashStats.veryHigh} (${((this.crashStats.veryHigh / this.crashStats.total) * 100).toFixed(1)}%)`
             );
             console.log(
                 `Máximo crash: ${this.crashStats.maxCrash.toFixed(2)}x`
