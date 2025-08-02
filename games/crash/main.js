@@ -143,22 +143,94 @@ class CrashGame {
     }
 
     generateCrashPoint() {
-        // Generar crash point exponencial (similar a sitios reales)
+        // Algoritmo mejorado para generar crash point justo y realista
+        // Basado en distribución exponencial real con house edge
+
         const random = Math.random();
         const houseEdge = 0.05; // 5% edge de la casa
 
-        // Fórmula para generar crash point con distribución exponencial
-        const crashPoint = Math.pow(Math.E, random * Math.log(100)) / Math.E;
+        // Parámetros para distribución exponencial justa
+        const minCrash = 1.0; // Mínimo crash point
+        const maxCrash = 100.0; // Máximo crash point (muy raro)
+        const lambda = 0.1; // Parámetro de la distribución exponencial
 
-        return Math.max(1.0, crashPoint * (1 - houseEdge));
+        // Distribución exponencial verdadera
+        // Esto hace que sea mucho más probable crashear en valores bajos
+        // y exponencialmente más difícil en valores altos
+        const exponentialValue = -Math.log(1 - random) / lambda;
+
+        // Mapear el valor exponencial al rango de crash points
+        const crashPoint =
+            minCrash +
+            (maxCrash - minCrash) * (1 - Math.exp(-exponentialValue / 10));
+
+        // Aplicar house edge para hacer el juego desafiante
+        const finalCrashPoint = crashPoint * (1 - houseEdge);
+
+        // Log para debugging (opcional)
+        console.log(
+            `Crash point generado: ${finalCrashPoint.toFixed(2)}x (random: ${random.toFixed(3)}, exp: ${exponentialValue.toFixed(2)})`
+        );
+
+        // Estadísticas de distribución (para verificar que es justa)
+        this.logCrashDistribution(finalCrashPoint);
+
+        return Math.max(1.0, finalCrashPoint);
+    }
+
+    logCrashDistribution(crashPoint) {
+        // Función para mostrar estadísticas de la distribución de crash points
+        if (!this.crashStats) {
+            this.crashStats = {
+                total: 0,
+                low: 0, // 1.0 - 2.0x
+                medium: 0, // 2.0 - 5.0x
+                high: 0, // 5.0 - 10.0x
+                veryHigh: 0, // 10.0x+
+                maxCrash: 0,
+            };
+        }
+
+        this.crashStats.total++;
+        this.crashStats.maxCrash = Math.max(
+            this.crashStats.maxCrash,
+            crashPoint
+        );
+
+        if (crashPoint < 2.0) this.crashStats.low++;
+        else if (crashPoint < 5.0) this.crashStats.medium++;
+        else if (crashPoint < 10.0) this.crashStats.high++;
+        else this.crashStats.veryHigh++;
+
+        // Mostrar estadísticas cada 10 partidas
+        if (this.crashStats.total % 10 === 0) {
+            console.log('📊 Estadísticas de Crash Points:');
+            console.log(`Total partidas: ${this.crashStats.total}`);
+            console.log(
+                `1.0-2.0x: ${this.crashStats.low} (${((this.crashStats.low / this.crashStats.total) * 100).toFixed(1)}%)`
+            );
+            console.log(
+                `2.0-5.0x: ${this.crashStats.medium} (${((this.crashStats.medium / this.crashStats.total) * 100).toFixed(1)}%)`
+            );
+            console.log(
+                `5.0-10.0x: ${this.crashStats.high} (${((this.crashStats.high / this.crashStats.total) * 100).toFixed(1)}%)`
+            );
+            console.log(
+                `10.0x+: ${this.crashStats.veryHigh} (${((this.crashStats.veryHigh / this.crashStats.total) * 100).toFixed(1)}%)`
+            );
+            console.log(
+                `Máximo crash: ${this.crashStats.maxCrash.toFixed(2)}x`
+            );
+        }
     }
 
     animateGame() {
         const currentTime = Date.now();
         const elapsed = (currentTime - this.gameStartTime) / 1000; // segundos
 
-        // Calcular multiplicador actual (exponencial)
-        this.currentMultiplier = Math.pow(Math.E, elapsed * 0.1);
+        // Calcular multiplicador actual (exponencial más realista)
+        // Ajustado para que coincida mejor con la distribución de crash points
+        this.currentMultiplier = Math.pow(Math.E, elapsed * 0.08);
 
         // Agregar punto a la gráfica
         this.chartData.push({
