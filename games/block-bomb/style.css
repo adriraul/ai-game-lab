@@ -1,0 +1,150 @@
+/* Estilos adicionales para el juego */
+
+/* Animaciones para los bloques */
+.block {
+    transition: all 0.3s ease;
+    transform: scale(1);
+}
+
+.block:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.block:active {
+    transform: scale(0.95);
+}
+
+/* Estilos para bloques clickeados */
+.block.clicked {
+    transform: scale(0.9);
+    opacity: 0.7;
+}
+
+.block.safe {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #047857;
+}
+
+.block.bomb {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-color: #b91c1c;
+    animation: bombExplosion 0.6s ease-in-out;
+}
+
+/* Animación de explosión */
+@keyframes bombExplosion {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(0.9);
+    }
+}
+
+/* Estilos para mensajes */
+.game-message {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para botones deshabilitados */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Efectos de hover mejorados */
+button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive design mejorado */
+@media (max-width: 640px) {
+    .block {
+        min-width: 50px;
+        min-height: 50px;
+        font-size: 0.8rem;
+    }
+
+    #blocksContainer {
+        gap: 0.5rem;
+    }
+}
+
+/* Efectos de partículas para victoria */
+.victory-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.victory-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 70%
+    );
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Contenedor de bloques optimizado para una línea */
+#blocksContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 1rem;
+    max-width: 100%;
+}
+
+/* Scroll horizontal suave para móviles */
+@media (max-width: 768px) {
+    #blocksContainer {
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .block {
+        min-width: 45px;
+        min-height: 45px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Estilos para el contador de probabilidades */
+.probability-info {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-top: 0.25rem;
+}

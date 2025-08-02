@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AI Game Lab - Catálogo de Juegos</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body
+        class="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-screen"
+    >
+        <!-- Header -->
+        <header class="bg-white/10 backdrop-blur-sm border-b border-white/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-gamepad text-3xl text-white mr-3"></i>
+                        <h1 class="text-3xl font-bold text-white">
+                            AI Game Lab
+                        </h1>
+                    </div>
+                    <div class="text-gray-300">
+                        <span class="text-sm">Tu laboratorio de juegos</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <!-- Hero Section -->
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-white mb-4">
+                    🎮 Bienvenido al Laboratorio
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Explora nuestra colección de juegos únicos creados con
+                    inteligencia artificial. Cada juego ofrece una experiencia
+                    diferente y desafiante.
+                </p>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Block Bomb Game -->
+                <div
+                    class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
+                >
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4"
+                        >
+                            <i class="fas fa-bomb text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">
+                            Bloques y Bombas
+                        </h3>
+                        <p class="text-gray-300 mb-6">
+                            Haz clic en bloques para ganar puntos, pero ¡cuidado
+                            con la bomba! Acumula puntos en múltiples rondas y
+                            decide cuándo plantarte.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4 justify-center">
+                            <span
+                                class="bg-blue-500/20 text-blue-200 px-3 py-1 rounded-full text-sm"
+                                >Estrategia</span
+                            >
+                            <span
+                                class="bg-green-500/20 text-green-200 px-3 py-1 rounded-full text-sm"
+                                >Puntuación</span
+                            >
+                            <span
+                                class="bg-purple-500/20 text-purple-200 px-3 py-1 rounded-full text-sm"
+                                >Riesgo</span
+                            >
+                        </div>
+                        <a
+                            href="games/block-bomb/index.html"
+                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105"
+                        >
+                            <i class="fas fa-play mr-2"></i>
+                            Jugar Ahora
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Coming Soon Games -->
+                <div
+                    class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10"
+                >
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full flex items-center justify-center mx-auto mb-4"
+                        >
+                            <i class="fas fa-clock text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">
+                            Próximamente
+                        </h3>
+                        <p class="text-gray-400 mb-6">
+                            Más juegos emocionantes están en desarrollo.
+                            ¡Mantente atento para nuevas experiencias!
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4 justify-center">
+                            <span
+                                class="bg-gray-500/20 text-gray-300 px-3 py-1 rounded-full text-sm"
+                                >En desarrollo</span
+                            >
+                        </div>
+                        <button
+                            disabled
+                            class="inline-flex items-center px-6 py-3 bg-gray-600 text-gray-400 font-semibold rounded-lg cursor-not-allowed"
+                        >
+                            <i class="fas fa-lock mr-2"></i>
+                            Próximamente
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10"
+                >
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full flex items-center justify-center mx-auto mb-4"
+                        >
+                            <i class="fas fa-clock text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">
+                            Próximamente
+                        </h3>
+                        <p class="text-gray-400 mb-6">
+                            Más juegos emocionantes están en desarrollo.
+                            ¡Mantente atento para nuevas experiencias!
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4 justify-center">
+                            <span
+                                class="bg-gray-500/20 text-gray-300 px-3 py-1 rounded-full text-sm"
+                                >En desarrollo</span
+                            >
+                        </div>
+                        <button
+                            disabled
+                            class="inline-flex items-center px-6 py-3 bg-gray-600 text-gray-400 font-semibold rounded-lg cursor-not-allowed"
+                        >
+                            <i class="fas fa-lock mr-2"></i>
+                            Próximamente
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="mt-16 bg-white/10 backdrop-blur-sm rounded-xl p-8">
+                <h3 class="text-2xl font-bold text-white text-center mb-8">
+                    Estadísticas del Laboratorio
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-blue-400 mb-2">
+                            1
+                        </div>
+                        <div class="text-gray-300">Juegos Disponibles</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-green-400 mb-2">
+                            ∞
+                        </div>
+                        <div class="text-gray-300">Horas de Diversión</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-purple-400 mb-2">
+                            100%
+                        </div>
+                        <div class="text-gray-300">Gratis</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer
+            class="bg-white/10 backdrop-blur-sm border-t border-white/20 mt-16"
+        >
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center">
+                    <p class="text-gray-300">
+                        © 2024 AI Game Lab - Creado con ❤️ y JavaScript
+                    </p>
+                    <div class="mt-4 flex justify-center space-x-6">
+                        <a
+                            href="#"
+                            class="text-gray-400 hover:text-white transition-colors"
+                        >
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                        <a
+                            href="#"
+                            class="text-gray-400 hover:text-white transition-colors"
+                        >
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a
+                            href="#"
+                            class="text-gray-400 hover:text-white transition-colors"
+                        >
+                            <i class="fas fa-envelope text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

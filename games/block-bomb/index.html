@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bloques y Bombas - AI Game Lab</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body
+        class="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-screen"
+    >
+        <!-- Header con navegación -->
+        <header class="bg-white/10 backdrop-blur-sm border-b border-white/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center">
+                        <a
+                            href="../../index.html"
+                            class="text-white hover:text-blue-300 transition-colors mr-4"
+                        >
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <i class="fas fa-bomb text-2xl text-red-400 mr-3"></i>
+                        <h1 class="text-2xl font-bold text-white">
+                            Bloques y Bombas
+                        </h1>
+                    </div>
+                    <div class="text-gray-300">
+                        <a
+                            href="../../index.html"
+                            class="hover:text-white transition-colors"
+                        >
+                            <i class="fas fa-home mr-1"></i>
+                            Volver al Catálogo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido del juego -->
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <!-- Header del juego -->
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-white mb-2">
+                    💣 Bloques y Bombas 💣
+                </h2>
+                <p class="text-gray-300 text-lg">
+                    ¡Encuentra los bloques seguros y acumula puntos!
+                </p>
+            </div>
+
+            <!-- Panel de estadísticas -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="bg-blue-500/20 rounded-lg p-4">
+                        <h3 class="text-blue-200 font-semibold">
+                            Puntos Actuales
+                        </h3>
+                        <p
+                            class="text-2xl font-bold text-white"
+                            id="currentScore"
+                        >
+                            0
+                        </p>
+                    </div>
+                    <div class="bg-green-500/20 rounded-lg p-4">
+                        <h3 class="text-green-200 font-semibold">
+                            Puntos Totales
+                        </h3>
+                        <p
+                            class="text-2xl font-bold text-white"
+                            id="totalScore"
+                        >
+                            0
+                        </p>
+                    </div>
+                    <div class="bg-purple-500/20 rounded-lg p-4">
+                        <h3 class="text-purple-200 font-semibold">
+                            Partidas Ganadas
+                        </h3>
+                        <p class="text-2xl font-bold text-white" id="gamesWon">
+                            0
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles del juego -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+                <div
+                    class="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                >
+                    <button
+                        id="newGameBtn"
+                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                    >
+                        🎮 Nueva Partida
+                    </button>
+                    <button
+                        id="nextRoundBtn"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                        disabled
+                    >
+                        ⏭️ Siguiente Ronda
+                    </button>
+                    <button
+                        id="plantBtn"
+                        class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                        disabled
+                    >
+                        🏁 Plantarse
+                    </button>
+                    <button
+                        id="resetBtn"
+                        class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                    >
+                        🔄 Reiniciar Todo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Área de juego -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <div class="text-center mb-4">
+                    <h3 class="text-xl font-semibold text-white mb-2">
+                        Bloques Disponibles
+                    </h3>
+                    <p class="text-gray-300">
+                        Haz clic en un bloque para ganar puntos. ¡Cada ronda se
+                        generan nuevos bloques!
+                    </p>
+                </div>
+
+                <!-- Contenedor de bloques -->
+                <div id="blocksContainer" class="flex justify-center gap-3">
+                    <!-- Los bloques se generarán dinámicamente aquí -->
+                </div>
+
+                <!-- Mensaje del juego -->
+                <div id="gameMessage" class="mt-6 text-center hidden">
+                    <p class="text-lg font-semibold"></p>
+                </div>
+            </div>
+
+            <!-- Instrucciones del juego -->
+            <div class="mt-8 bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 text-center">
+                    📖 Cómo Jugar
+                </h3>
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300"
+                >
+                    <div>
+                        <h4 class="font-semibold text-white mb-2">
+                            🎯 Objetivo
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li>• Haz clic en bloques para ganar puntos</li>
+                            <li>
+                                • Cada bloque tiene un número que indica los
+                                puntos
+                            </li>
+                            <li>
+                                • ¡Cuidado! Uno de los bloques contiene una
+                                bomba
+                            </li>
+                            <li>
+                                • Los bloques más altos tienen más probabilidad
+                                de bomba
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-2">
+                            🎮 Controles
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li>
+                                • <strong>Nueva Partida:</strong> Inicia un
+                                nuevo juego
+                            </li>
+                            <li>
+                                • <strong>Siguiente Ronda:</strong> Continúa
+                                acumulando puntos
+                            </li>
+                            <li>
+                                • <strong>Plantarse:</strong> Guarda puntos y
+                                termina
+                            </li>
+                            <li>
+                                • <strong>Reiniciar Todo:</strong> Borra todas
+                                las estadísticas
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="main.js"></script>
+    </body>
+</html>
