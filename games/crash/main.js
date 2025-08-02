@@ -117,6 +117,7 @@ class CrashGame {
             return;
         }
 
+        // Resetear estado del juego
         this.currentBet = betAmount;
         this.balance -= betAmount;
         this.gameActive = true;
@@ -124,6 +125,13 @@ class CrashGame {
         this.cashoutMultiplier = 0;
         this.gameStartTime = Date.now();
         this.chartData = [];
+        this.currentMultiplier = 1.0;
+
+        // Resetear UI visual
+        this.crashStatusEl.textContent = '¡Plántate ahora!';
+        this.crashStatusEl.style.color = '#9ca3af';
+        this.multiplierEl.textContent = '1.00x';
+        this.profitEl.textContent = '$0.00';
 
         // Generar punto de crash (exponencial)
         this.crashPoint = this.generateCrashPoint();
@@ -133,6 +141,9 @@ class CrashGame {
         this.startBtn.disabled = true;
         this.cashoutBtn.disabled = false;
         this.multiplierOverlay.classList.remove('hidden');
+
+        // Redibujar gráfico inicial
+        this.drawInitialChart();
 
         // Iniciar animación
         this.animateGame();
@@ -439,10 +450,28 @@ class CrashGame {
     endGame(message, type) {
         this.gameActive = false;
         this.currentBet = 0;
+        this.gameCrashed = false;
+        this.cashoutMultiplier = 0;
 
+        // Resetear UI
         this.startBtn.disabled = false;
         this.cashoutBtn.disabled = true;
         this.multiplierOverlay.classList.add('hidden');
+
+        // Resetear texto de estado
+        this.crashStatusEl.textContent = '¡Plántate ahora!';
+        this.crashStatusEl.style.color = '#9ca3af';
+
+        // Resetear multiplicador
+        this.currentMultiplier = 1.0;
+        this.multiplierEl.textContent = '1.00x';
+        this.profitEl.textContent = '$0.00';
+
+        // Limpiar datos del gráfico
+        this.chartData = [];
+
+        // Redibujar gráfico inicial
+        this.drawInitialChart();
 
         this.updateUI();
         this.saveStats();
@@ -452,6 +481,9 @@ class CrashGame {
             cancelAnimationFrame(this.animationId);
             this.animationId = null;
         }
+
+        // Mostrar mensaje
+        this.showMessage(message, type);
     }
 
     resetGame() {
