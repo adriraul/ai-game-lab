@@ -277,6 +277,15 @@ class CrashGame {
         const potentialProfit = this.currentBet * this.currentMultiplier;
         this.profitEl.textContent = `$${potentialProfit.toFixed(2)}`;
 
+        // Actualizar texto de estado según si ya se plantó o no
+        if (this.cashoutMultiplier > 0) {
+            this.crashStatusEl.textContent = `✅ Plantado en ${this.cashoutMultiplier.toFixed(2)}x`;
+            this.crashStatusEl.style.color = '#22c55e';
+        } else if (this.gameActive) {
+            this.crashStatusEl.textContent = '¡Plántate ahora!';
+            this.crashStatusEl.style.color = '#9ca3af';
+        }
+
         // Efectos visuales
         this.currentMultiplierEl.classList.add('multiplier-animation');
         setTimeout(() => {
@@ -337,7 +346,12 @@ class CrashGame {
         this.balance += profit;
 
         // Agregar al historial
-        this.addToHistory(true, this.cashoutMultiplier, profit);
+        this.addToHistory(
+            true,
+            this.cashoutMultiplier,
+            profit,
+            this.currentBet
+        );
 
         // Efectos visuales
         this.profitEl.classList.add('profit-animation');
@@ -348,8 +362,9 @@ class CrashGame {
             this.balanceEl.classList.remove('balance-update');
         }, 1000);
 
-        // Marcar como plantado pero continuar la animación
+        // Marcar como plantado y deshabilitar botones inmediatamente
         this.gameActive = false;
+        this.gameCrashed = true; // Prevenir múltiples cashouts
         this.cashoutBtn.disabled = true;
         this.startBtn.disabled = true;
 
@@ -378,7 +393,7 @@ class CrashGame {
                 multiplier: this.currentMultiplier,
             });
 
-            // Actualizar UI
+            // Actualizar UI (sin permitir cashout adicional)
             this.updateMultiplier();
             this.drawChart();
 
@@ -388,8 +403,10 @@ class CrashGame {
                 return;
             }
 
-            // Continuar animación
-            requestAnimationFrame(animate);
+            // Continuar animación solo si no se ha hecho cashout
+            if (!this.gameCrashed) {
+                requestAnimationFrame(animate);
+            }
         };
 
         animate();
@@ -525,10 +542,12 @@ class CrashGame {
     }
 
     setAllIn() {
-        this.betInput.value = this.balance.toFixed(2);
+        // Restar 0.01 si el balance tiene decimales para evitar problemas de precisión
+        const allInAmount = this.balance % 1 === 0 ? this.balance : this.balance - 0.01;
+        this.betInput.value = allInAmount.toFixed(2);
         this.updateBetAmount();
         this.showMessage(
-            `All In configurado: $${this.balance.toFixed(2)}`,
+            `All In configurado: $${allInAmount.toFixed(2)}`,
             'info'
         );
     }
@@ -545,7 +564,7 @@ class CrashGame {
             won,
             multiplier,
             profit,
-            originalBet: won ? 0 : originalBet, // Para pérdidas, guardamos la apuesta original
+            originalBet: originalBet, // Guardamos la apuesta original para ambos casos
             timestamp: new Date().toLocaleTimeString(),
         };
 
@@ -562,16 +581,9 @@ class CrashGame {
     updateHistory() {
         this.historyContainer.innerHTML = '';
 
-        // Calcular profit total acumulado
-        let totalProfit = 0;
-        this.gameHistory.forEach(item => {
-            if (item.won) {
-                totalProfit += item.profit;
-            } else {
-                // Para pérdidas, usamos la apuesta original guardada
-                totalProfit -= item.originalBet;
-            }
-        });
+        // Calcular profit total (balance actual - balance inicial)
+        const initialBalance = 1000;
+        const totalProfit = this.balance - initialBalance;
 
         // Mostrar profit total en la parte superior
         if (this.gameHistory.length > 0) {
@@ -587,23 +599,40 @@ class CrashGame {
             this.historyContainer.appendChild(totalProfitEl);
         }
 
-        this.gameHistory.forEach(item => {
+        // Calcular profit acumulado para cada entrada
+        let runningProfit = 0;
+        this.gameHistory.forEach((item, index) => {
             const historyEl = document.createElement('div');
             historyEl.className = `history-item ${item.won ? 'history-win' : 'history-loss'}`;
 
             const icon = item.won ? '💰' : '💥';
             const result = item.won ? 'GANÓ' : 'PERDIÓ';
-            const amount = item.won
+
+            // Profit individual de esta partida (ganancia neta)
+            const individualProfit = item.won
+                ? item.profit - item.originalBet
+                : -item.originalBet;
+
+            // Actualizar profit acumulado
+            runningProfit += individualProfit;
+
+            // Mostrar importe total recibido y profit acumulado
+            const totalReceived = item.won
                 ? `+$${item.profit.toFixed(2)}`
                 : `-$${item.originalBet.toFixed(2)}`;
 
+            const accumulatedAmount = `${runningProfit >= 0 ? '+' : ''}$${runningProfit.toFixed(2)}`;
+
             historyEl.innerHTML = `
-                <div class="flex justify-between items-center">
+                <div class="flex justify-between items-center mb-1">
                     <span>${icon} ${result}</span>
                     <span class="font-bold">${item.multiplier.toFixed(2)}x</span>
-                    <span class="text-sm">${amount}</span>
+                    <span class="text-sm ${item.won ? 'text-green-400' : 'text-red-400'}">${totalReceived}</span>
                 </div>
-                <div class="text-xs text-gray-400">${item.timestamp}</div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400">${item.timestamp}</span>
+                    <span class="${runningProfit >= 0 ? 'text-green-300' : 'text-red-300'}">Profit: ${accumulatedAmount}</span>
+                </div>
             `;
 
             this.historyContainer.appendChild(historyEl);
