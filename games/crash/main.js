@@ -149,20 +149,20 @@ class CrashGame {
         const random = Math.random();
         const houseEdge = 0.05; // 5% edge de la casa
 
-        // Parámetros para distribución exponencial justa
+        // Parámetros para distribución exponencial más desafiante
         const minCrash = 1.0; // Mínimo crash point
         const maxCrash = 100.0; // Máximo crash point (muy raro)
-        const lambda = 0.1; // Parámetro de la distribución exponencial
+        const lambda = 0.08; // Parámetro más agresivo para distribución exponencial
 
         // Distribución exponencial verdadera
         // Esto hace que sea mucho más probable crashear en valores bajos
         // y exponencialmente más difícil en valores altos
         const exponentialValue = -Math.log(1 - random) / lambda;
 
-        // Mapear el valor exponencial al rango de crash points
+        // Mapear el valor exponencial al rango de crash points (más desafiante)
         const crashPoint =
             minCrash +
-            (maxCrash - minCrash) * (1 - Math.exp(-exponentialValue / 10));
+            (maxCrash - minCrash) * (1 - Math.exp(-exponentialValue / 8));
 
         // Aplicar house edge para hacer el juego desafiante
         const finalCrashPoint = crashPoint * (1 - houseEdge);
@@ -228,9 +228,9 @@ class CrashGame {
         const currentTime = Date.now();
         const elapsed = (currentTime - this.gameStartTime) / 1000; // segundos
 
-        // Calcular multiplicador actual (exponencial más realista)
-        // Ajustado para que coincida mejor con la distribución de crash points
-        this.currentMultiplier = Math.pow(Math.E, elapsed * 0.08);
+        // Calcular multiplicador actual (exponencial más rápido y emocionante)
+        // Ajustado para crecimiento más agresivo y emocionante
+        this.currentMultiplier = Math.pow(Math.E, elapsed * 0.15);
 
         // Agregar punto a la gráfica
         this.chartData.push({
@@ -354,7 +354,7 @@ class CrashGame {
             const elapsed = (currentTime - this.gameStartTime) / 1000;
 
             // Calcular multiplicador actual
-            this.currentMultiplier = Math.pow(Math.E, elapsed * 0.08);
+            this.currentMultiplier = Math.pow(Math.E, elapsed * 0.15);
 
             // Agregar punto a la gráfica
             this.chartData.push({
