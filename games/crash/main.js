@@ -33,6 +33,7 @@ class CrashGame {
         this.cashoutBtn = document.getElementById('cashoutBtn');
         this.resetBtn = document.getElementById('resetBtn');
         this.betInput = document.getElementById('betInput');
+        this.allInBtn = document.getElementById('allInBtn');
         this.currentMultiplierEl = document.getElementById('currentMultiplier');
         this.crashStatusEl = document.getElementById('crashStatus');
         this.multiplierOverlay = document.getElementById('multiplierOverlay');
@@ -53,6 +54,9 @@ class CrashGame {
                 this.updateBetAmount();
             });
         });
+
+        // Botón All In
+        this.allInBtn.addEventListener('click', () => this.setAllIn());
     }
 
     setupCanvas() {
@@ -402,7 +406,7 @@ class CrashGame {
 
         // Agregar al historial solo si no se había plantado
         if (this.cashoutMultiplier === 0) {
-            this.addToHistory(false, this.crashPoint, 0);
+            this.addToHistory(false, this.crashPoint, 0, this.currentBet);
         }
 
         // Continuar animación del crash
@@ -520,6 +524,15 @@ class CrashGame {
         }
     }
 
+    setAllIn() {
+        this.betInput.value = this.balance.toFixed(2);
+        this.updateBetAmount();
+        this.showMessage(
+            `All In configurado: $${this.balance.toFixed(2)}`,
+            'info'
+        );
+    }
+
     updateUI() {
         this.balanceEl.textContent = `$${this.balance.toFixed(2)}`;
         this.betAmountEl.textContent = `$${this.currentBet.toFixed(2)}`;
@@ -527,11 +540,12 @@ class CrashGame {
         this.profitEl.textContent = `$${(this.currentBet * this.currentMultiplier).toFixed(2)}`;
     }
 
-    addToHistory(won, multiplier, profit) {
+    addToHistory(won, multiplier, profit, originalBet = 0) {
         const historyItem = {
             won,
             multiplier,
             profit,
+            originalBet: won ? 0 : originalBet, // Para pérdidas, guardamos la apuesta original
             timestamp: new Date().toLocaleTimeString(),
         };
 
@@ -548,6 +562,31 @@ class CrashGame {
     updateHistory() {
         this.historyContainer.innerHTML = '';
 
+        // Calcular profit total acumulado
+        let totalProfit = 0;
+        this.gameHistory.forEach(item => {
+            if (item.won) {
+                totalProfit += item.profit;
+            } else {
+                // Para pérdidas, usamos la apuesta original guardada
+                totalProfit -= item.originalBet;
+            }
+        });
+
+        // Mostrar profit total en la parte superior
+        if (this.gameHistory.length > 0) {
+            const totalProfitEl = document.createElement('div');
+            totalProfitEl.className =
+                'mb-3 p-2 bg-white/10 rounded text-center';
+            totalProfitEl.innerHTML = `
+                <div class="text-sm text-gray-300">Profit Total</div>
+                <div class="text-lg font-bold ${totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}">
+                    ${totalProfit >= 0 ? '+' : ''}$${totalProfit.toFixed(2)}
+                </div>
+            `;
+            this.historyContainer.appendChild(totalProfitEl);
+        }
+
         this.gameHistory.forEach(item => {
             const historyEl = document.createElement('div');
             historyEl.className = `history-item ${item.won ? 'history-win' : 'history-loss'}`;
@@ -556,7 +595,7 @@ class CrashGame {
             const result = item.won ? 'GANÓ' : 'PERDIÓ';
             const amount = item.won
                 ? `+$${item.profit.toFixed(2)}`
-                : `-$${this.currentBet.toFixed(2)}`;
+                : `-$${item.originalBet.toFixed(2)}`;
 
             historyEl.innerHTML = `
                 <div class="flex justify-between items-center">
