@@ -1,0 +1,468 @@
+/* Estilos específicos para el juego Memory */
+
+/* Contenedor de la carta */
+.memory-card {
+    width: 60px;
+    height: 80px;
+    perspective: 1000px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    min-width: 50px;
+    min-height: 70px;
+}
+
+.memory-card:hover {
+    transform: scale(1.05);
+}
+
+/* Carta individual */
+.card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Carta volteada */
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+/* Carta acertada (debe estar volteada) */
+.card.matched.flipped {
+    transform: rotateY(180deg) !important;
+}
+
+/* Carta encontrada */
+.card.matched {
+    transform: rotateY(180deg) !important;
+    opacity: 0.9;
+    pointer-events: none;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.8);
+    border: 2px solid rgba(34, 197, 94, 0.8);
+    animation: matchedGlow 2s ease-in-out infinite alternate;
+}
+
+/* Asegurar que las cartas acertadas muestren el contenido */
+.card.matched .card-back {
+    transform: rotateY(0deg) !important;
+}
+
+@keyframes matchedGlow {
+    0% {
+        box-shadow: 0 0 15px rgba(34, 197, 94, 0.8);
+        border-color: rgba(34, 197, 94, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 25px rgba(34, 197, 94, 1);
+        border-color: rgba(34, 197, 94, 1);
+    }
+}
+
+/* Frente de la carta (reverso) */
+.card-front {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dorso de la carta (contenido) */
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    transform: rotateY(180deg);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dorso de carta acertada */
+.card.matched .card-back {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border: 2px solid rgba(34, 197, 94, 0.8);
+}
+
+/* Animación de parpadeo para cartas no coincidentes */
+.card.wrong {
+    animation: shake 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: rotateY(180deg) translateX(0);
+    }
+    25% {
+        transform: rotateY(180deg) translateX(-3px);
+    }
+    75% {
+        transform: rotateY(180deg) translateX(3px);
+    }
+}
+
+/* Animación de victoria para cartas coincidentes */
+.card.matched.victory {
+    animation: victory 0.6s ease-in-out;
+}
+
+@keyframes victory {
+    0% {
+        transform: rotateY(180deg) scale(1) translateY(0);
+    }
+    50% {
+        transform: rotateY(180deg) scale(1.1) translateY(0);
+    }
+    100% {
+        transform: rotateY(180deg) scale(1) translateY(0);
+    }
+}
+
+/* Panel de jugador activo */
+.player-active {
+    background: linear-gradient(
+        135deg,
+        rgba(147, 51, 234, 0.4) 0%,
+        rgba(236, 72, 153, 0.4) 100%
+    ) !important;
+    border: 2px solid rgba(147, 51, 234, 0.6) !important;
+    box-shadow: 0 0 25px rgba(147, 51, 234, 0.4) !important;
+    transition: all 0.3s ease;
+    min-height: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1.01);
+}
+
+/* Panel de jugador inactivo */
+.player-inactive {
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    min-height: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1);
+}
+
+/* Animación para el turno */
+.turn-indicator {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Mensaje de victoria */
+.victory-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    z-index: 20000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Botones con efectos */
+.btn-game {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-game:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.btn-game:active {
+    transform: translateY(0);
+}
+
+/* Efecto de brillo en botones */
+.btn-game::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.btn-game:hover::before {
+    left: 100%;
+}
+
+/* Estilos para el selector personalizado */
+.custom-select {
+    position: relative;
+    display: inline-block;
+    min-width: 200px;
+    z-index: 10000;
+}
+
+.select-selected {
+    background: linear-gradient(
+        135deg,
+        rgba(147, 51, 234, 0.2) 0%,
+        rgba(236, 72, 153, 0.2) 100%
+    );
+    border: 2px solid rgba(147, 51, 234, 0.5);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.select-selected:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(147, 51, 234, 0.3) 0%,
+        rgba(236, 72, 153, 0.3) 100%
+    );
+    border-color: rgba(147, 51, 234, 0.8);
+    box-shadow: 0 6px 20px rgba(147, 51, 234, 0.3);
+    transform: translateY(-2px);
+}
+
+.select-selected::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid rgba(147, 51, 234, 0.8);
+    transition: all 0.3s ease;
+}
+
+.select-selected:hover::after {
+    border-top-color: rgba(147, 51, 234, 1);
+}
+
+.select-selected:disabled,
+.select-selected[style*='opacity: 0.5'] {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.select-selected:disabled:hover,
+.select-selected[style*='opacity: 0.5']:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.select-items {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10001;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid rgba(147, 51, 234, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.select-option {
+    padding: 12px 20px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.select-option:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(147, 51, 234, 0.3) 0%,
+        rgba(236, 72, 153, 0.3) 100%
+    );
+    transform: translateX(4px);
+}
+
+.select-option:last-child {
+    border-bottom: none;
+}
+
+.select-hide {
+    display: none;
+}
+
+.hidden-select {
+    display: none;
+}
+
+/* Responsive design para diferentes tamaños de pantalla */
+@media (max-width: 768px) {
+    .memory-card {
+        width: 50px;
+        height: 70px;
+        min-width: 40px;
+        min-height: 60px;
+    }
+
+    .card-front,
+    .card-back {
+        font-size: 1.2rem;
+    }
+
+    #cardSelector {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .memory-card {
+        width: 45px;
+        height: 60px;
+        min-width: 35px;
+        min-height: 50px;
+    }
+
+    .card-front,
+    .card-back {
+        font-size: 1rem;
+    }
+
+    #cardSelector {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Efecto de carga para el grid */
+.memory-grid {
+    opacity: 1;
+    animation: fadeIn 0.3s ease-out;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Estilo para cartas deshabilitadas durante el turno */
+.card.disabled {
+    pointer-events: none;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+/* Efecto de resaltado para cartas seleccionadas */
+.card.selected {
+    box-shadow: 0 0 15px rgba(147, 51, 234, 0.8);
+    border: 2px solid rgba(147, 51, 234, 0.8);
+    transition: all 0.3s ease;
+}
+
+/* Modal de confirmación personalizado */
+.confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 30000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.confirm-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid rgba(147, 51, 234, 0.5);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease-out;
+}
+
+.confirm-btn {
+    transition: all 0.3s ease;
+}
+
+.confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}

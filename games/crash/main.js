@@ -508,25 +508,62 @@ class CrashGame {
     }
 
     resetGame() {
-        if (
-            confirm(
-                '¿Estás seguro de que quieres reiniciar el juego? Perderás todo tu progreso.'
-            )
-        ) {
-            this.balance = 1000;
-            this.currentBet = 0;
-            this.currentMultiplier = 1.0;
-            this.gameActive = false;
-            this.gameCrashed = false;
-            this.gameHistory = [];
+        this.showConfirmModal(
+            '¿Estás seguro de que quieres reiniciar el juego? Perderás todo tu progreso.',
+            () => {
+                this.balance = 1000;
+                this.currentBet = 0;
+                this.currentMultiplier = 1.0;
+                this.gameActive = false;
+                this.gameCrashed = false;
+                this.gameHistory = [];
 
-            this.updateUI();
-            this.saveStats();
-            this.drawInitialChart();
-            this.clearHistory();
+                this.updateUI();
+                this.saveStats();
+                this.drawInitialChart();
+                this.clearHistory();
 
-            this.showMessage('Juego reiniciado. Balance: $1000', 'info');
-        }
+                this.showMessage('Juego reiniciado. Balance: $1000', 'info');
+            }
+        );
+    }
+
+    showConfirmModal(message, onConfirm) {
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'confirm-modal';
+        modalDiv.innerHTML = `
+            <div class="confirm-content">
+                <h3 class="text-xl font-semibold text-white mb-4">⚠️ Confirmar Acción</h3>
+                <p class="text-gray-300 mb-6">${message}</p>
+                <div class="flex justify-center space-x-4">
+                    <button class="confirm-btn confirm-yes bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                        Sí, Reiniciar
+                    </button>
+                    <button class="confirm-btn confirm-no bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modalDiv);
+
+        // Event listeners
+        modalDiv.querySelector('.confirm-yes').addEventListener('click', () => {
+            onConfirm();
+            modalDiv.remove();
+        });
+
+        modalDiv.querySelector('.confirm-no').addEventListener('click', () => {
+            modalDiv.remove();
+        });
+
+        // Cerrar al hacer clic fuera del modal
+        modalDiv.addEventListener('click', e => {
+            if (e.target === modalDiv) {
+                modalDiv.remove();
+            }
+        });
     }
 
     updateBetAmount() {
@@ -543,7 +580,8 @@ class CrashGame {
 
     setAllIn() {
         // Restar 0.01 si el balance tiene decimales para evitar problemas de precisión
-        const allInAmount = this.balance % 1 === 0 ? this.balance : this.balance - 0.01;
+        const allInAmount =
+            this.balance % 1 === 0 ? this.balance : this.balance - 0.01;
         this.betInput.value = allInAmount.toFixed(2);
         this.updateBetAmount();
         this.showMessage(

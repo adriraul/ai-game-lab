@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Memory - AI Game Lab</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body
+        class="bg-gradient-to-br from-purple-900 via-pink-900 to-indigo-900 min-h-screen"
+    >
+        <!-- Header con navegación -->
+        <header class="bg-white/10 backdrop-blur-sm border-b border-white/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center">
+                        <a
+                            href="../../index.html"
+                            class="text-white hover:text-purple-300 transition-colors mr-4"
+                        >
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <i
+                            class="fas fa-brain text-2xl text-purple-400 mr-3"
+                        ></i>
+                        <h1 class="text-2xl font-bold text-white">Memory</h1>
+                    </div>
+                    <div class="text-gray-300">
+                        <a
+                            href="../../index.html"
+                            class="hover:text-white transition-colors"
+                        >
+                            <i class="fas fa-home mr-1"></i>
+                            Volver al Catálogo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido del juego -->
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <!-- Header del juego -->
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-white mb-2">🧠 Memory</h2>
+                <p class="text-gray-300 text-lg">
+                    ¡Encuentra las parejas y compite con tu oponente!
+                </p>
+            </div>
+
+            <!-- Panel de jugadores -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Jugador 1 -->
+                    <div
+                        class="bg-purple-500/20 rounded-lg p-4 text-center"
+                        id="player1Panel"
+                    >
+                        <div class="flex items-center justify-center mb-2">
+                            <i
+                                class="fas fa-user text-2xl text-purple-300 mr-3"
+                            ></i>
+                            <h3 class="text-xl font-semibold text-white">
+                                Jugador 1
+                            </h3>
+                        </div>
+                        <div
+                            class="text-3xl font-bold text-purple-300 mb-2"
+                            id="player1Score"
+                        >
+                            0
+                        </div>
+                        <div class="text-sm text-gray-300" id="player1Status">
+                            Esperando...
+                        </div>
+                    </div>
+
+                    <!-- Jugador 2 -->
+                    <div
+                        class="bg-pink-500/20 rounded-lg p-4 text-center"
+                        id="player2Panel"
+                    >
+                        <div class="flex items-center justify-center mb-2">
+                            <i
+                                class="fas fa-user text-2xl text-pink-300 mr-3"
+                            ></i>
+                            <h3 class="text-xl font-semibold text-white">
+                                Jugador 2
+                            </h3>
+                        </div>
+                        <div
+                            class="text-3xl font-bold text-pink-300 mb-2"
+                            id="player2Score"
+                        >
+                            0
+                        </div>
+                        <div class="text-sm text-gray-300" id="player2Status">
+                            Esperando...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuración del juego -->
+            <div
+                class="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6"
+                style="position: relative; z-index: 9999"
+            >
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-semibold text-white mb-2">
+                        Configuración
+                    </h3>
+                    <p class="text-gray-300">
+                        Selecciona el número de cartas para el juego
+                    </p>
+                </div>
+
+                <!-- Selector de cartas -->
+                <div class="flex justify-center items-center space-x-4 mb-6">
+                    <label class="text-white font-semibold">
+                        Número de cartas:
+                    </label>
+                    <div class="custom-select">
+                        <div class="select-selected" id="selectDisplay">
+                            16 cartas (4x4)
+                        </div>
+                        <div
+                            class="select-items select-hide"
+                            id="selectOptions"
+                        >
+                            <div class="select-option" data-value="4">
+                                4 cartas (2x2)
+                            </div>
+                            <div class="select-option" data-value="16">
+                                16 cartas (4x4)
+                            </div>
+                            <div class="select-option" data-value="36">
+                                36 cartas (6x6)
+                            </div>
+                            <div class="select-option" data-value="64">
+                                64 cartas (8x8)
+                            </div>
+                        </div>
+                        <select id="cardSelector" class="hidden-select">
+                            <option value="4">4 cartas (2x2)</option>
+                            <option value="16">16 cartas (4x4)</option>
+                            <option value="36">36 cartas (6x6)</option>
+                            <option value="64">64 cartas (8x8)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Controles del juego -->
+                <div class="flex justify-center space-x-4">
+                    <button
+                        id="newGameBtn"
+                        class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                    >
+                        <i class="fas fa-play mr-2"></i>
+                        Iniciar Partida
+                    </button>
+                    <button
+                        id="resetBtn"
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                    >
+                        <i class="fas fa-redo mr-2"></i>
+                        Reiniciar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Área de juego -->
+            <div
+                class="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6"
+                style="position: relative; z-index: 1"
+            >
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-semibold text-white mb-2">
+                        Tablero de Juego
+                    </h3>
+                    <p class="text-gray-300">
+                        Haz clic en las cartas para encontrar las parejas
+                    </p>
+                </div>
+
+                <!-- Grid de cartas -->
+                <div class="flex justify-center">
+                    <div
+                        id="memoryGrid"
+                        class="grid gap-2 md:gap-3"
+                        style="grid-template-columns: repeat(4, 1fr)"
+                    >
+                        <!-- Las cartas se generarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 text-center">
+                    📊 Estadísticas
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="bg-purple-500/20 rounded-lg p-4">
+                        <h4 class="text-purple-200 font-semibold">
+                            Partidas Jugadas
+                        </h4>
+                        <p
+                            class="text-2xl font-bold text-white"
+                            id="gamesPlayed"
+                        >
+                            0
+                        </p>
+                    </div>
+                    <div class="bg-pink-500/20 rounded-lg p-4">
+                        <h4 class="text-pink-200 font-semibold">
+                            Victorias J1
+                        </h4>
+                        <p
+                            class="text-2xl font-bold text-white"
+                            id="player1Wins"
+                        >
+                            0
+                        </p>
+                    </div>
+                    <div class="bg-indigo-500/20 rounded-lg p-4">
+                        <h4 class="text-indigo-200 font-semibold">
+                            Victorias J2
+                        </h4>
+                        <p
+                            class="text-2xl font-bold text-white"
+                            id="player2Wins"
+                        >
+                            0
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instrucciones del juego -->
+            <div class="mt-8 bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-white mb-4 text-center">
+                    📖 Cómo Jugar
+                </h3>
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300"
+                >
+                    <div>
+                        <h4 class="font-semibold text-white mb-2">
+                            🎯 Objetivo
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li>• Encuentra todas las parejas de cartas</li>
+                            <li>• Gana el jugador con más parejas</li>
+                            <li>• Si encuentras una pareja, sigues jugando</li>
+                            <li>• Si no encuentras pareja, pasa el turno</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-2">
+                            🎮 Controles
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li>
+                                • <strong>Clic en carta:</strong> Voltea la
+                                carta
+                            </li>
+                            <li>
+                                • <strong>Nueva Partida:</strong> Inicia un
+                                nuevo juego
+                            </li>
+                            <li>
+                                • <strong>Reiniciar:</strong> Resetea
+                                estadísticas
+                            </li>
+                            <li>
+                                • <strong>Turnos:</strong> Se alternan
+                                automáticamente
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="main.js"></script>
+    </body>
+</html>

@@ -222,25 +222,62 @@ class BlockGame {
 
     // Reiniciar todo el juego
     resetGame() {
-        if (
-            confirm(
-                '¿Estás seguro de que quieres reiniciar todas las estadísticas?'
-            )
-        ) {
-            this.currentScore = 0;
-            this.totalScore = 0;
-            this.gamesWon = 0;
-            this.gameActive = false;
-            this.currentRound = 0;
-            this.clickedBlocks.clear();
+        this.showConfirmModal(
+            '¿Estás seguro de que quieres reiniciar todas las estadísticas?',
+            () => {
+                this.currentScore = 0;
+                this.totalScore = 0;
+                this.gamesWon = 0;
+                this.gameActive = false;
+                this.currentRound = 0;
+                this.clickedBlocks.clear();
 
-            this.saveStats();
-            this.updateScore();
-            this.hideMessage();
-            this.blocksContainer.innerHTML = '';
-            this.plantBtn.disabled = true;
-            this.nextRoundBtn.disabled = true;
-        }
+                this.saveStats();
+                this.updateScore();
+                this.hideMessage();
+                this.blocksContainer.innerHTML = '';
+                this.plantBtn.disabled = true;
+                this.nextRoundBtn.disabled = true;
+            }
+        );
+    }
+
+    showConfirmModal(message, onConfirm) {
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'confirm-modal';
+        modalDiv.innerHTML = `
+            <div class="confirm-content">
+                <h3 class="text-xl font-semibold text-white mb-4">⚠️ Confirmar Acción</h3>
+                <p class="text-gray-300 mb-6">${message}</p>
+                <div class="flex justify-center space-x-4">
+                    <button class="confirm-btn confirm-yes bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                        Sí, Reiniciar
+                    </button>
+                    <button class="confirm-btn confirm-no bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modalDiv);
+
+        // Event listeners
+        modalDiv.querySelector('.confirm-yes').addEventListener('click', () => {
+            onConfirm();
+            modalDiv.remove();
+        });
+
+        modalDiv.querySelector('.confirm-no').addEventListener('click', () => {
+            modalDiv.remove();
+        });
+
+        // Cerrar al hacer clic fuera del modal
+        modalDiv.addEventListener('click', (e) => {
+            if (e.target === modalDiv) {
+                modalDiv.remove();
+            }
+        });
     }
 
     // Actualizar puntuación en la UI
