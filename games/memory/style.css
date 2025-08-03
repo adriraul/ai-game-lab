@@ -1,54 +1,70 @@
-/* Estilos específicos para el juego Memory */
+/* Estilos específicos para el juego Memory - Fichas cuadradas v2 */
 
-/* Contenedor de la carta */
-.memory-card {
-    width: 60px;
-    height: 80px;
+/* Contenedor de la ficha - Sobrescribir Tailwind */
+.memory-card,
+#memoryGrid .memory-card,
+.memory-grid .memory-card,
+div.memory-card,
+.grid .memory-card,
+.flex .memory-card,
+.justify-center .memory-card,
+[class*='grid'] .memory-card,
+[class*='flex'] .memory-card {
+    width: 70px !important;
+    height: 70px !important;
     perspective: 1000px;
     cursor: pointer;
     transition: transform 0.2s ease;
-    min-width: 50px;
-    min-height: 70px;
+    min-width: 70px !important;
+    min-height: 70px !important;
+    max-width: 70px !important;
+    max-height: 70px !important;
+    aspect-ratio: 1 / 1 !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    box-sizing: border-box !important;
+    display: block !important;
 }
 
 .memory-card:hover {
     transform: scale(1.05);
 }
 
-/* Carta individual */
+/* Ficha individual */
 .card {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     transform-style: preserve-3d;
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
     will-change: transform;
     transform: translate3d(0, 0, 0);
+    box-sizing: border-box !important;
 }
 
-/* Carta volteada */
+/* Ficha volteada */
 .card.flipped {
     transform: rotateY(180deg);
 }
 
-/* Carta acertada (debe estar volteada) */
+/* Ficha acertada (debe estar volteada) */
 .card.matched.flipped {
     transform: rotateY(180deg) !important;
 }
 
-/* Carta encontrada */
+/* Ficha encontrada */
 .card.matched {
     transform: rotateY(180deg) !important;
     opacity: 0.9;
     pointer-events: none;
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.8);
-    border: 2px solid rgba(34, 197, 94, 0.8);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
+    border: 3px solid rgba(34, 197, 94, 0.9);
     animation: matchedGlow 2s ease-in-out infinite alternate;
 }
 
-/* Asegurar que las cartas acertadas muestren el contenido */
+/* Asegurar que las fichas acertadas muestren el contenido */
 .card.matched .card-back {
     transform: rotateY(0deg) !important;
 }
@@ -64,37 +80,54 @@
     }
 }
 
-/* Frente de la carta (reverso) */
+/* Frente de la ficha (reverso) */
 .card-front {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     backface-visibility: hidden;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Dorso de la carta (contenido) */
-.card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    border-radius: 8px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.8rem;
     color: white;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-sizing: border-box !important;
+}
+
+/* Dorso de la ficha (contenido) */
+.card-back {
+    position: absolute;
+    width: 100% !important;
+    height: 100% !important;
+    backface-visibility: hidden;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
     transform: rotateY(180deg);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-sizing: border-box !important;
+}
+
+/* Forzar que los emojis no afecten las dimensiones */
+.card-front i,
+.card-back {
+    font-size: 2rem !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
 }
 
 /* Dorso de carta acertada */
@@ -366,10 +399,35 @@
 /* Responsive design para diferentes tamaños de pantalla */
 @media (max-width: 768px) {
     .memory-card {
+        width: 55px;
+        height: 55px;
+        min-width: 50px;
+        min-height: 50px;
+    }
+
+    .card-front,
+    .card-back {
+        font-size: 1.4rem;
+    }
+
+    #cardSelector {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    /* Ajustar grid para pantallas medianas */
+    .memory-grid,
+    #memoryGrid {
+        gap: 6px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .memory-card {
         width: 50px;
-        height: 70px;
-        min-width: 40px;
-        min-height: 60px;
+        height: 50px;
+        min-width: 45px;
+        min-height: 45px;
     }
 
     .card-front,
@@ -378,36 +436,67 @@
     }
 
     #cardSelector {
-        padding: 10px 16px;
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .memory-card {
-        width: 45px;
-        height: 60px;
-        min-width: 35px;
-        min-height: 50px;
-    }
-
-    .card-front,
-    .card-back {
-        font-size: 1rem;
-    }
-
-    #cardSelector {
         padding: 8px 12px;
         font-size: 0.85rem;
+    }
+
+    /* Ajustar grid para pantallas pequeñas */
+    .memory-grid,
+    #memoryGrid {
+        gap: 4px !important;
     }
 }
 
 /* Efecto de carga para el grid */
-.memory-grid {
+.memory-grid,
+#memoryGrid,
+.grid.memory-grid {
     opacity: 1;
     animation: fadeIn 0.3s ease-out;
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
+    gap: 8px !important;
+    display: grid !important;
+    justify-items: center !important;
+    align-items: center !important;
+}
+
+/* Forzar que cada elemento del grid sea cuadrado */
+.memory-grid > *,
+#memoryGrid > *,
+.grid.memory-grid > * {
+    width: 70px !important;
+    height: 70px !important;
+    min-width: 70px !important;
+    min-height: 70px !important;
+    max-width: 70px !important;
+    max-height: 70px !important;
+    aspect-ratio: 1 / 1 !important;
+}
+
+/* Estilos específicos para diferentes tamaños de grid */
+.memory-grid[style*='repeat(2, 1fr)'],
+#memoryGrid[style*='repeat(2, 1fr)'] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(2, 1fr) !important;
+}
+
+.memory-grid[style*='repeat(4, 1fr)'],
+#memoryGrid[style*='repeat(4, 1fr)'] {
+    grid-template-columns: repeat(4, 1fr) !important;
+    grid-template-rows: repeat(4, 1fr) !important;
+}
+
+.memory-grid[style*='repeat(6, 1fr)'],
+#memoryGrid[style*='repeat(6, 1fr)'] {
+    grid-template-columns: repeat(6, 1fr) !important;
+    grid-template-rows: repeat(6, 1fr) !important;
+}
+
+.memory-grid[style*='repeat(8, 1fr)'],
+#memoryGrid[style*='repeat(8, 1fr)'] {
+    grid-template-columns: repeat(8, 1fr) !important;
+    grid-template-rows: repeat(8, 1fr) !important;
 }
 
 @keyframes fadeIn {

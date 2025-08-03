@@ -112,6 +112,15 @@ class MemoryGame {
 
         // Deshabilitar selector durante el juego
         this.disableCardSelector();
+
+        // Scroll automático al tablero después de crear las cartas
+        setTimeout(() => {
+            this.memoryGrid.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'center',
+            });
+        }, 100); // Pequeño delay para asegurar que las cartas estén renderizadas
     }
 
     updateGridSize() {
