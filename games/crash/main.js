@@ -22,6 +22,17 @@ class CrashGame {
         this.loadStats();
         this.setupCanvas();
         this.drawInitialChart();
+
+        // Inicializar multiplicadores en 1.00x
+        this.multiplierEl.textContent = '1.00x';
+        this.currentMultiplierEl.textContent = '1.00x';
+        this.currentMultiplierEl.style.color = '#9ca3af';
+
+        // Asegurar que el overlay esté oculto inicialmente
+        this.multiplierOverlay.classList.add('hidden');
+
+        // Forzar estilos del scrollbar con JavaScript
+        this.forceScrollbarStyles();
     }
 
     initializeElements() {
@@ -85,6 +96,9 @@ class CrashGame {
         this.ctx.moveTo(0, this.canvas.height - 50);
         this.ctx.lineTo(this.canvas.width, this.canvas.height - 50);
         this.ctx.stroke();
+
+        // Asegurar que el multiplicador grande muestre 1.00x inicialmente
+        this.multiplierEl.textContent = '1.00x';
     }
 
     drawGrid() {
@@ -116,14 +130,16 @@ class CrashGame {
             return;
         }
 
-        if (betAmount > this.balance) {
+        // Usar una tolerancia pequeña para problemas de precisión decimal
+        if (betAmount > this.balance + 0.01) {
             this.showMessage('No tienes suficiente dinero', 'error');
             return;
         }
 
         // Resetear estado del juego
         this.currentBet = betAmount;
-        this.balance -= betAmount;
+        // Manejar precisión decimal al restar
+        this.balance = Math.round((this.balance - betAmount) * 100) / 100;
         this.gameActive = true;
         this.gameCrashed = false;
         this.cashoutMultiplier = 0;
@@ -136,6 +152,14 @@ class CrashGame {
         this.crashStatusEl.style.color = '#9ca3af';
         this.multiplierEl.textContent = '1.00x';
         this.profitEl.textContent = '$0.00';
+
+        // Estado inicial del multiplicador superior (parado)
+        this.currentMultiplierEl.textContent = '1.00x';
+        this.currentMultiplierEl.style.color = '#9ca3af';
+        this.currentMultiplierEl.classList.remove(
+            'multiplier-animation',
+            'critical-multiplier'
+        );
 
         // Generar punto de crash (exponencial)
         this.crashPoint = this.generateCrashPoint();
@@ -259,7 +283,7 @@ class CrashGame {
         this.drawChart();
 
         // Verificar si se estrelló
-        if (this.currentMultiplier >= this.crashPoint) {
+        if (this.currentMultiplier >= this.crashPoint && !this.gameCrashed) {
             this.crash();
             return;
         }
@@ -269,12 +293,22 @@ class CrashGame {
     }
 
     updateMultiplier() {
-        const multiplierText = `${this.currentMultiplier.toFixed(2)}x`;
-        this.multiplierEl.textContent = multiplierText;
-        this.currentMultiplierEl.textContent = multiplierText;
+        // Usar el mismo valor exacto para ambos multiplicadores
+        const multiplierValue = this.currentMultiplier;
+        const multiplierText = `${multiplierValue.toFixed(2)}x`;
+
+        // Actualizar multiplicador grande siempre que esté activo
+        if (this.gameActive) {
+            this.multiplierEl.textContent = multiplierText;
+        }
+
+        // Actualizar multiplicador pequeño siempre que esté activo
+        if (this.gameActive) {
+            this.currentMultiplierEl.textContent = multiplierText;
+        }
 
         // Calcular ganancia potencial
-        const potentialProfit = this.currentBet * this.currentMultiplier;
+        const potentialProfit = this.currentBet * multiplierValue;
         this.profitEl.textContent = `$${potentialProfit.toFixed(2)}`;
 
         // Actualizar texto de estado según si ya se plantó o no
@@ -286,14 +320,28 @@ class CrashGame {
             this.crashStatusEl.style.color = '#9ca3af';
         }
 
-        // Efectos visuales
-        this.currentMultiplierEl.classList.add('multiplier-animation');
-        setTimeout(() => {
+        // Estados del multiplicador superior según el estado del juego
+        if (this.gameCrashed) {
+            // Estado de crash: rojo y sin animación
+            this.currentMultiplierEl.style.color = '#ef4444';
             this.currentMultiplierEl.classList.remove('multiplier-animation');
-        }, 500);
+            this.currentMultiplierEl.classList.add('critical-multiplier');
+        } else if (this.gameActive) {
+            // Estado activo: naranja y animado
+            this.currentMultiplierEl.style.color = '#f97316';
+            this.currentMultiplierEl.classList.add('multiplier-animation');
+            this.currentMultiplierEl.classList.remove('critical-multiplier');
+        } else {
+            // Estado inactivo: gris y parado
+            this.currentMultiplierEl.style.color = '#9ca3af';
+            this.currentMultiplierEl.classList.remove(
+                'multiplier-animation',
+                'critical-multiplier'
+            );
+        }
 
-        // Efecto crítico cuando se acerca al crash
-        if (this.currentMultiplier > this.crashPoint * 0.8) {
+        // Efecto crítico cuando se acerca al crash (solo si está activo)
+        if (this.gameActive && multiplierValue > this.crashPoint * 0.8) {
             this.currentMultiplierEl.classList.add('critical-multiplier');
         }
     }
@@ -343,15 +391,14 @@ class CrashGame {
 
         this.cashoutMultiplier = this.currentMultiplier;
         const profit = this.currentBet * this.cashoutMultiplier;
-        this.balance += profit;
+        // Manejar precisión decimal al sumar
+        this.balance = Math.round((this.balance + profit) * 100) / 100;
+
+        // Guardar la apuesta original para el historial
+        const originalBet = this.currentBet;
 
         // Agregar al historial
-        this.addToHistory(
-            true,
-            this.cashoutMultiplier,
-            profit,
-            this.currentBet
-        );
+        this.addToHistory(true, this.cashoutMultiplier, profit, originalBet);
 
         // Efectos visuales
         this.profitEl.classList.add('profit-animation');
@@ -362,9 +409,7 @@ class CrashGame {
             this.balanceEl.classList.remove('balance-update');
         }, 1000);
 
-        // Marcar como plantado y deshabilitar botones inmediatamente
-        this.gameActive = false;
-        this.gameCrashed = true; // Prevenir múltiples cashouts
+        // Deshabilitar botones inmediatamente
         this.cashoutBtn.disabled = true;
         this.startBtn.disabled = true;
 
@@ -374,8 +419,14 @@ class CrashGame {
             'success'
         );
 
-        // Continuar animación hasta el crash point
+        // Continuar animación hasta el crash point (NO cambiar gameActive ni gameCrashed)
         this.continueAnimationUntilCrash();
+
+        // Añadir efecto visual de "plantado exitoso"
+        this.multiplierEl.classList.add('profit-animation');
+        setTimeout(() => {
+            this.multiplierEl.classList.remove('profit-animation');
+        }, 1000);
     }
 
     continueAnimationUntilCrash() {
@@ -398,7 +449,10 @@ class CrashGame {
             this.drawChart();
 
             // Verificar si se estrelló
-            if (this.currentMultiplier >= this.crashPoint) {
+            if (
+                this.currentMultiplier >= this.crashPoint &&
+                !this.gameCrashed
+            ) {
                 this.crash();
                 return;
             }
@@ -413,51 +467,72 @@ class CrashGame {
     }
 
     crash() {
+        // Prevenir múltiples crashes
+        if (this.gameCrashed) {
+            return;
+        }
+
         this.gameCrashed = true;
         this.gameActive = false;
 
-        // Efectos visuales de crash
+        // Efectos visuales de crash más dramáticos
         this.currentMultiplierEl.classList.add('crash-animation');
         this.crashStatusEl.textContent = '💥 ¡CRASH!';
         this.crashStatusEl.style.color = '#ef4444';
+        this.crashStatusEl.classList.add('critical-multiplier');
 
         // Agregar al historial solo si no se había plantado
         if (this.cashoutMultiplier === 0) {
             this.addToHistory(false, this.crashPoint, 0, this.currentBet);
         }
 
+        // Mostrar el punto de crash en el multiplicador
+        this.multiplierEl.textContent = `${this.crashPoint.toFixed(2)}x`;
+        this.multiplierEl.style.color = '#ef4444';
+        this.multiplierEl.classList.add('crash-animation');
+
         // Continuar animación del crash
         this.animateCrash();
 
         setTimeout(() => {
-            // Mostrar mensaje diferente según si se plantó o no
-            if (this.cashoutMultiplier > 0) {
+            // Solo mostrar mensaje si no se había plantado antes
+            if (this.cashoutMultiplier === 0) {
                 this.endGame(
-                    `¡Se estrelló en ${this.crashPoint.toFixed(2)}x! Te plantaste a tiempo en ${this.cashoutMultiplier.toFixed(2)}x`,
-                    'info'
-                );
-            } else {
-                this.endGame(
-                    `¡Se estrelló en ${this.crashPoint.toFixed(2)}x! Perdiste $${this.currentBet.toFixed(2)}`,
+                    `¡CRASH en ${this.crashPoint.toFixed(2)}x! Perdiste $${this.currentBet.toFixed(2)}`,
                     'error'
                 );
+            } else {
+                // Si se plantó, solo resetear sin mensaje
+                this.endGame();
             }
-        }, 2000);
+        }, 3000); // Aumentar tiempo para que se vea mejor
     }
 
     animateCrash() {
-        const crashTime = 2; // segundos de animación de crash
+        const crashTime = 3; // segundos de animación de crash
         const startTime = Date.now();
+
+        // Fijar el multiplicador grande en el punto de crash
+        this.multiplierEl.textContent = `${this.crashPoint.toFixed(2)}x`;
+        this.multiplierEl.style.color = '#ef4444';
+        this.multiplierEl.classList.add('crash-animation');
+
+        // El multiplicador pequeño sí disminuirá
+        this.currentMultiplierEl.textContent = `${this.crashPoint.toFixed(2)}x`;
+        this.currentMultiplierEl.style.color = '#ef4444';
+        this.currentMultiplierEl.classList.add('critical-multiplier');
 
         const animate = () => {
             const elapsed = (Date.now() - startTime) / 1000;
             const progress = Math.min(elapsed / crashTime, 1);
 
-            // Simular caída del multiplicador
-            const crashMultiplier = this.crashPoint * (1 - progress * 0.5);
-            this.currentMultiplier = crashMultiplier;
+            // Simular caída del multiplicador solo para la animación
+            const crashMultiplier = this.crashPoint * (1 - progress * 0.8);
 
-            this.updateMultiplier();
+            // Actualizar solo el multiplicador pequeño
+            this.currentMultiplierEl.textContent = `${crashMultiplier.toFixed(2)}x`;
+
+            // Actualizar el gráfico con el multiplicador de crash
             this.drawChart();
 
             if (progress < 1) {
@@ -469,6 +544,11 @@ class CrashGame {
     }
 
     endGame(message, type) {
+        // Prevenir múltiples llamadas
+        if (this.gameActive === false && this.currentBet === 0) {
+            return;
+        }
+
         this.gameActive = false;
         this.currentBet = 0;
         this.gameCrashed = false;
@@ -488,6 +568,9 @@ class CrashGame {
         this.multiplierEl.textContent = '1.00x';
         this.profitEl.textContent = '$0.00';
 
+        // Asegurar que el multiplicador grande muestre 1.00x
+        this.multiplierEl.textContent = '1.00x';
+
         // Limpiar datos del gráfico
         this.chartData = [];
 
@@ -503,8 +586,10 @@ class CrashGame {
             this.animationId = null;
         }
 
-        // Mostrar mensaje
-        this.showMessage(message, type);
+        // Solo mostrar mensaje si se proporciona uno
+        if (message) {
+            this.showMessage(message, type);
+        }
     }
 
     resetGame() {
@@ -523,6 +608,15 @@ class CrashGame {
                 this.drawInitialChart();
                 this.clearHistory();
 
+                // Resetear multiplicadores a 1.00x
+                this.multiplierEl.textContent = '1.00x';
+                this.currentMultiplierEl.textContent = '1.00x';
+                this.currentMultiplierEl.style.color = '#9ca3af';
+                this.currentMultiplierEl.classList.remove(
+                    'multiplier-animation',
+                    'critical-multiplier'
+                );
+
                 this.showMessage('Juego reiniciado. Balance: $1000', 'info');
             }
         );
@@ -532,8 +626,8 @@ class CrashGame {
         const amount = parseFloat(this.betInput.value) || 0;
         this.betAmountEl.textContent = `$${amount.toFixed(2)}`;
 
-        // Validar que no exceda el balance
-        if (amount > this.balance) {
+        // Validar que no exceda el balance con tolerancia para decimales
+        if (amount > this.balance + 0.01) {
             this.betInput.style.borderColor = '#ef4444';
         } else {
             this.betInput.style.borderColor = 'rgba(255, 255, 255, 0.3)';
@@ -541,9 +635,8 @@ class CrashGame {
     }
 
     setAllIn() {
-        // Restar 0.01 si el balance tiene decimales para evitar problemas de precisión
-        const allInAmount =
-            this.balance % 1 === 0 ? this.balance : this.balance - 0.01;
+        // Usar todo el balance disponible con manejo de precisión decimal
+        const allInAmount = Math.round(this.balance * 100) / 100; // Redondear a 2 decimales
         this.betInput.value = allInAmount.toFixed(2);
         this.updateBetAmount();
         this.showMessage(
@@ -557,6 +650,11 @@ class CrashGame {
         this.betAmountEl.textContent = `$${this.currentBet.toFixed(2)}`;
         this.multiplierEl.textContent = `${this.currentMultiplier.toFixed(2)}x`;
         this.profitEl.textContent = `$${(this.currentBet * this.currentMultiplier).toFixed(2)}`;
+
+        // Asegurar que el multiplicador grande muestre 1.00x cuando no hay juego activo
+        if (!this.gameActive) {
+            this.multiplierEl.textContent = '1.00x';
+        }
     }
 
     addToHistory(won, multiplier, profit, originalBet = 0) {
@@ -591,8 +689,8 @@ class CrashGame {
             totalProfitEl.className =
                 'mb-3 p-2 bg-white/10 rounded text-center';
             totalProfitEl.innerHTML = `
-                <div class="text-sm text-gray-300">Profit Total</div>
-                <div class="text-lg font-bold ${totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}">
+                <div class="text-xs text-gray-300">Profit Total</div>
+                <div class="text-sm font-bold ${totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}">
                     ${totalProfit >= 0 ? '+' : ''}$${totalProfit.toFixed(2)}
                 </div>
             `;
@@ -624,14 +722,14 @@ class CrashGame {
             const accumulatedAmount = `${runningProfit >= 0 ? '+' : ''}$${runningProfit.toFixed(2)}`;
 
             historyEl.innerHTML = `
-                <div class="flex justify-between items-center mb-1">
-                    <span>${icon} ${result}</span>
-                    <span class="font-bold">${item.multiplier.toFixed(2)}x</span>
-                    <span class="text-sm ${item.won ? 'text-green-400' : 'text-red-400'}">${totalReceived}</span>
+                <div class="flex justify-between items-center mb-1 text-sm">
+                    <span class="flex-shrink-0">${icon} ${result}</span>
+                    <span class="font-bold flex-shrink-0 mx-2">${item.multiplier.toFixed(2)}x</span>
+                    <span class="text-xs ${item.won ? 'text-green-400' : 'text-red-400'} flex-shrink-0">${totalReceived}</span>
                 </div>
                 <div class="flex justify-between items-center text-xs">
-                    <span class="text-gray-400">${item.timestamp}</span>
-                    <span class="${runningProfit >= 0 ? 'text-green-300' : 'text-red-300'}">Profit: ${accumulatedAmount}</span>
+                    <span class="text-gray-400 flex-shrink-0">${item.timestamp}</span>
+                    <span class="${runningProfit >= 0 ? 'text-green-300' : 'text-red-300'} flex-shrink-0">${accumulatedAmount}</span>
                 </div>
             `;
 
@@ -689,6 +787,62 @@ class CrashGame {
             this.updateUI();
             this.updateHistory();
         }
+    }
+
+    forceScrollbarStyles() {
+        // Crear estilos dinámicamente para forzar la aplicación
+        const style = document.createElement('style');
+        style.textContent = `
+            .history-container::-webkit-scrollbar,
+            #historyContainer::-webkit-scrollbar {
+                width: 12px !important;
+                height: 12px !important;
+                background: rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            .history-container::-webkit-scrollbar-track,
+            #historyContainer::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.1) !important;
+                border-radius: 8px !important;
+                margin: 4px 0 !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+            
+            .history-container::-webkit-scrollbar-thumb,
+            #historyContainer::-webkit-scrollbar-thumb {
+                background: #22c55e !important;
+                border-radius: 8px !important;
+                border: 2px solid rgba(255, 255, 255, 0.2) !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+                min-height: 20px !important;
+            }
+            
+            .history-container::-webkit-scrollbar-thumb:hover,
+            #historyContainer::-webkit-scrollbar-thumb:hover {
+                background: #16a34a !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+                transform: scale(1.1) !important;
+            }
+            
+            .history-container::-webkit-scrollbar-thumb:active,
+            #historyContainer::-webkit-scrollbar-thumb:active {
+                background: #15803d !important;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+            }
+            
+            .history-container::-webkit-scrollbar-corner,
+            #historyContainer::-webkit-scrollbar-corner {
+                background: transparent !important;
+            }
+            
+            .history-container::-webkit-scrollbar-button,
+            #historyContainer::-webkit-scrollbar-button {
+                display: none !important;
+                height: 0 !important;
+                width: 0 !important;
+            }
+        `;
+        document.head.appendChild(style);
     }
 }
 

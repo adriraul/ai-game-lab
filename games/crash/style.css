@@ -55,19 +55,22 @@ button:disabled {
 
 /* Animación de crash */
 .crash-animation {
-    animation: crashShake 0.5s ease-in-out;
+    animation: crashShake 0.8s ease-in-out infinite;
 }
 
 @keyframes crashShake {
     0%,
     100% {
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
+        color: #ef4444;
     }
     25% {
-        transform: translateX(-5px);
+        transform: translateX(-8px) scale(1.05);
+        color: #dc2626;
     }
     75% {
-        transform: translateX(5px);
+        transform: translateX(8px) scale(1.05);
+        color: #dc2626;
     }
 }
 
@@ -138,10 +141,20 @@ button:disabled {
     border-radius: 6px;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .history-item:hover {
     transform: translateX(5px);
+}
+
+.history-item * {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 .history-win {
@@ -270,6 +283,23 @@ button:disabled {
     }
 }
 
+/* Animación naranja para multiplicador activo */
+.multiplier-animation {
+    animation: orangePulse 0.8s ease-in-out infinite;
+}
+
+@keyframes orangePulse {
+    0%,
+    100% {
+        color: #f97316;
+        text-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+    }
+    50% {
+        color: #ea580c;
+        text-shadow: 0 0 12px rgba(234, 88, 12, 0.8);
+    }
+}
+
 /* Estilos para el overlay de game over */
 .game-over-overlay {
     background: rgba(0, 0, 0, 0.8);
@@ -321,24 +351,79 @@ button:disabled {
 }
 
 /* Efectos de hover para el historial */
-.history-container {
+.history-container,
+#historyContainer {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    word-wrap: break-word;
+    -webkit-overflow-scrolling: touch;
+    
+    /* Estilos para Firefox */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    scrollbar-color: rgba(34, 197, 94, 0.6) rgba(0, 0, 0, 0.05);
+    scrollbar-gutter: stable;
 }
 
-.history-container::-webkit-scrollbar {
-    width: 6px;
+/* Estilos para WebKit (Chrome, Safari, Edge) - FORZADOS */
+.history-container::-webkit-scrollbar,
+#historyContainer::-webkit-scrollbar {
+    width: 12px !important;
+    height: 12px !important;
+    background: rgba(0, 0, 0, 0.1) !important;
 }
 
-.history-container::-webkit-scrollbar-track {
-    background: transparent;
+.history-container::-webkit-scrollbar-track,
+#historyContainer::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+    margin: 4px 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.history-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
+.history-container::-webkit-scrollbar-thumb,
+#historyContainer::-webkit-scrollbar-thumb {
+    background: #22c55e !important;
+    border-radius: 8px !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    min-height: 20px !important;
 }
 
-.history-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
+.history-container::-webkit-scrollbar-thumb:hover,
+#historyContainer::-webkit-scrollbar-thumb:hover {
+    background: #16a34a !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+    transform: scale(1.1) !important;
+}
+
+.history-container::-webkit-scrollbar-thumb:active,
+#historyContainer::-webkit-scrollbar-thumb:active {
+    background: #15803d !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Estilos adicionales para forzar la aplicación */
+.history-container::-webkit-scrollbar-corner,
+#historyContainer::-webkit-scrollbar-corner {
+    background: transparent !important;
+}
+
+.history-container::-webkit-scrollbar-button,
+#historyContainer::-webkit-scrollbar-button {
+    display: none !important;
+    height: 0 !important;
+    width: 0 !important;
+}
+
+/* Estilos específicos para diferentes navegadores */
+.history-container::-webkit-scrollbar:vertical,
+#historyContainer::-webkit-scrollbar:vertical {
+    width: 12px !important;
+}
+
+.history-container::-webkit-scrollbar:horizontal,
+#historyContainer::-webkit-scrollbar:horizontal {
+    height: 12px !important;
 }
