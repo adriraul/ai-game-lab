@@ -136,7 +136,7 @@ class MemoryGame {
     createCards() {
         this.memoryGrid.innerHTML = '';
         this.cards = [];
-        
+
         // Asegurar que el grid esté visible desde el inicio
         this.memoryGrid.style.opacity = '1';
 
@@ -366,7 +366,7 @@ class MemoryGame {
     }
 
     resetStats() {
-        this.showConfirmModal(
+        ModalManager.showConfirmModal(
             '¿Estás seguro de que quieres reiniciar todas las estadísticas?',
             () => {
                 this.stats = {
@@ -378,44 +378,6 @@ class MemoryGame {
                 this.updateStats();
             }
         );
-    }
-
-    showConfirmModal(message, onConfirm) {
-        const modalDiv = document.createElement('div');
-        modalDiv.className = 'confirm-modal';
-        modalDiv.innerHTML = `
-            <div class="confirm-content">
-                <h3 class="text-xl font-semibold text-white mb-4">⚠️ Confirmar Acción</h3>
-                <p class="text-gray-300 mb-6">${message}</p>
-                <div class="flex justify-center space-x-4">
-                    <button class="confirm-btn confirm-yes bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
-                        Sí, Reiniciar
-                    </button>
-                    <button class="confirm-btn confirm-no bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
-                        Cancelar
-                    </button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modalDiv);
-
-        // Event listeners
-        modalDiv.querySelector('.confirm-yes').addEventListener('click', () => {
-            onConfirm();
-            modalDiv.remove();
-        });
-
-        modalDiv.querySelector('.confirm-no').addEventListener('click', () => {
-            modalDiv.remove();
-        });
-
-        // Cerrar al hacer clic fuera del modal
-        modalDiv.addEventListener('click', (e) => {
-            if (e.target === modalDiv) {
-                modalDiv.remove();
-            }
-        });
     }
 
     shuffleArray(array) {

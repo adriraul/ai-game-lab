@@ -1,0 +1,186 @@
+/* Estilos compartidos para todos los juegos */
+
+/* Modal de confirmación personalizado */
+.confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 30000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.confirm-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid rgba(147, 51, 234, 0.5);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease-out;
+}
+
+.confirm-btn {
+    transition: all 0.3s ease;
+}
+
+.confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Animaciones compartidas */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Estilos para botones compartidos */
+.btn-game {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-game:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.btn-game:active {
+    transform: translateY(0);
+}
+
+/* Efecto de brillo en botones */
+.btn-game::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.btn-game:hover::before {
+    left: 100%;
+}
+
+/* Estilos para botones deshabilitados */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Efectos de hover mejorados para botones habilitados */
+button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para mensajes de juego */
+.game-message {
+    transition: all 0.3s ease;
+}
+
+.game-message.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* Estilos para contenedores de juego */
+.game-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos para paneles de jugadores */
+.player-panel {
+    transition: all 0.3s ease;
+    min-height: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-active {
+    background: linear-gradient(
+        135deg,
+        rgba(147, 51, 234, 0.4) 0%,
+        rgba(236, 72, 153, 0.4) 100%
+    ) !important;
+    border: 2px solid rgba(147, 51, 234, 0.6) !important;
+    box-shadow: 0 0 25px rgba(147, 51, 234, 0.4) !important;
+    transform: scale(1.01);
+}
+
+.player-inactive {
+    opacity: 0.7;
+    transform: scale(1);
+}
+
+/* Estilos para estadísticas */
+.stats-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive design compartido */
+@media (max-width: 768px) {
+    .confirm-content {
+        padding: 1.5rem;
+        max-width: 350px;
+    }
+
+    .btn-game {
+        font-size: 0.9rem;
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .confirm-content {
+        padding: 1rem;
+        max-width: 300px;
+    }
+
+    .btn-game {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+}
