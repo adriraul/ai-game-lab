@@ -50,9 +50,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Block Bomb Game -->
                 <div
-                    class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
+                    class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex flex-col"
                 >
-                    <div class="text-center">
+                    <div class="text-center flex-1 flex flex-col">
                         <div
                             class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4"
                         >
@@ -61,7 +61,7 @@
                         <h3 class="text-2xl font-bold text-white mb-2">
                             Bloques y Bombas
                         </h3>
-                        <p class="text-gray-300 mb-6">
+                        <p class="text-gray-300 mb-6 flex-1">
                             Haz clic en bloques para ganar puntos, pero ¡cuidado
                             con la bomba! Acumula puntos en múltiples rondas y
                             decide cuándo plantarte.
@@ -92,9 +92,9 @@
 
                 <!-- Crash Game -->
                 <div
-                    class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
+                    class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex flex-col"
                 >
-                    <div class="text-center">
+                    <div class="text-center flex-1 flex flex-col">
                         <div
                             class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"
                         >
@@ -105,7 +105,7 @@
                         <h3 class="text-2xl font-bold text-white mb-2">
                             Crash
                         </h3>
-                        <p class="text-gray-300 mb-6">
+                        <p class="text-gray-300 mb-6 flex-1">
                             ¡Plántate antes de que se estrelle! El multiplicador
                             sube exponencialmente. Gestiona tu dinero y decide
                             cuándo cobrar tus ganancias.
@@ -136,9 +136,9 @@
 
                 <!-- Memory Game -->
                 <div
-                    class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
+                    class="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex flex-col"
                 >
-                    <div class="text-center">
+                    <div class="text-center flex-1 flex flex-col">
                         <div
                             class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4"
                         >
@@ -147,7 +147,7 @@
                         <h3 class="text-2xl font-bold text-white mb-2">
                             Memory
                         </h3>
-                        <p class="text-gray-300 mb-6">
+                        <p class="text-gray-300 mb-6 flex-1">
                             ¡Encuentra las parejas y compite con tu oponente! Un
                             clásico juego de memoria para dos jugadores con
                             animaciones fluidas y diseño moderno.
@@ -200,6 +200,73 @@
                             100%
                         </div>
                         <div class="text-gray-300">Gratis</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de Desarrollo -->
+            <div
+                class="mt-16 bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10"
+            >
+                <h3 class="text-2xl font-bold text-white text-center mb-8">
+                    ⏱️ Información de Desarrollo
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-400 mb-2">
+                            ~10h
+                        </div>
+                        <div class="text-gray-300">Tiempo Total</div>
+                        <div class="text-xs text-gray-500 mt-2">
+                            Desarrollo completo del proyecto
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-400 mb-2">
+                            3
+                        </div>
+                        <div class="text-gray-300">Juegos Creados</div>
+                        <div class="text-xs text-gray-500 mt-2">
+                            Bloques y Bombas, Crash, Memory
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-400 mb-2">
+                            ~3h 20m
+                        </div>
+                        <div class="text-gray-300">Promedio por Juego</div>
+                        <div class="text-xs text-gray-500 mt-2">
+                            Incluye desarrollo, pruebas y correcciones
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desglose detallado -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <h4 class="font-semibold text-white mb-2">
+                            🎮 Bloques y Bombas
+                        </h4>
+                        <p class="text-gray-400">~1 hora y 30 minutos</p>
+                        <p class="text-xs text-gray-500">
+                            Sistema de rondas, probabilidades, estadísticas
+                        </p>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <h4 class="font-semibold text-white mb-2">📈 Crash</h4>
+                        <p class="text-gray-400">~4 horas</p>
+                        <p class="text-xs text-gray-500">
+                            Gráfico en tiempo real, multiplicador dinámico,
+                            historial
+                        </p>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <h4 class="font-semibold text-white mb-2">🧠 Memory</h4>
+                        <p class="text-gray-400">~3 horas</p>
+                        <p class="text-xs text-gray-500">
+                            Fichas cuadradas, grid adaptativo, animaciones
+                            fluidas
+                        </p>
                     </div>
                 </div>
             </div>
